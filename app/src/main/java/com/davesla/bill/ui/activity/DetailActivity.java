@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import com.davesla.bill.R;
@@ -19,6 +18,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
+import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,6 @@ public class DetailActivity extends BaseActivity {
     private AppBarLayout appBarLayout;
     private LinearLayout layoutTitle;
     private Toolbar toolbar;
-    private FloatingActionButton fab;
     private SuperRecyclerView recyclerView;
 
     private int statusBarHeight;
@@ -42,7 +41,6 @@ public class DetailActivity extends BaseActivity {
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         barChart = (BarChart) findViewById(R.id.chart);
         layoutTitle = (LinearLayout) findViewById(R.id.layout_title);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
         recyclerView = (SuperRecyclerView) findViewById(R.id.list);
     }
 
@@ -67,26 +65,24 @@ public class DetailActivity extends BaseActivity {
                 float alpha = Math.abs(verticalOffset) / ((float) layoutTitle.getHeight() - statusBarHeight - toolbar.getHeight());
                 toolbar.setAlpha(alpha);
 
-                if (Math.abs(verticalOffset) >= (layoutTitle.getHeight() - (toolbar.getHeight() + statusBarHeight))) {
-                    fab.hide();
-                } else {
-                    fab.show();
-                }
-
-
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setData();
             }
         });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter( new DetailAdapter(this));
+        recyclerView.setAdapter(new DetailAdapter(this));
+
+        recyclerView.setupSwipeToDismiss(new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+            @Override
+            public boolean canDismiss(int position) {
+                return true;
+            }
+
+            @Override
+            public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+
+            }
+        });
     }
 
     private void initChart() {

@@ -1,6 +1,5 @@
 package com.davesla.bill.adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +40,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         params.height = DensityUtil.dip2px(context, 33 * 3);
         holder.mChart.setLayoutParams(params);
         setData(holder.mChart);
-        holder.mChart.animateY(1500);
+        holder.mChart.animateY(500);
         holder.mChart.getLegend().setEnabled(false);
 
     }
@@ -70,6 +69,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             xAxis.setSpaceBetweenLabels(0);
             xAxis.setDrawGridLines(false);
 
+            mChart.getAxisLeft().setDrawAxisLine(false);
+            mChart.getAxisRight().setDrawAxisLine(false);
+            mChart.getAxisRight().setDrawLabels(false);
+
             mChart.getAxisLeft().setDrawGridLines(false);
         }
 
@@ -87,7 +90,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         xVals.add("封光");
         xVals.add("王正昕");
 
-        int colors[] = new int[]{Color.rgb(44, 133, 191), Color.rgb(122, 176, 88), Color.rgb(224, 72, 93)};
+        int colors[] = new int[]{context.getResourceColor(R.color.colorAccent)};
         BarDataSet barDataSet = new BarDataSet(barEntries, "支出金额");
         barDataSet.setColors(colors);
         barDataSet.setDrawValues(false);
