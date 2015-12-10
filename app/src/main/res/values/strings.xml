@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Bill</string>
+    <string name="app_name">糊涂账</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">账单</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

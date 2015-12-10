@@ -1,9 +1,12 @@
 package com.davesla.bill.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Rect;
 import android.hardware.Camera;
+import android.view.Window;
 
 public class SystemInfoUtil {
     public static String getVersion(Context context) {
@@ -25,6 +28,15 @@ public class SystemInfoUtil {
             return 0;
         }
     }
+
+    public static int getStatusBarHeight(Activity activity) {
+        Rect rectangle = new Rect();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        return rectangle.top;
+    }
+
+
 
     public static boolean checkFrontCamera() {
         final int cameraCount = Camera.getNumberOfCameras();

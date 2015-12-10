@@ -5,14 +5,24 @@
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="gray">#dfdfdf</color>
+    <color name="textGray">#8a8f92</color>
     <color name="red">#de0000</color>
     <color name="grayDark">#c1c1c1</color>
     <color name="colorBackground">#f7f7f7</color>
     <color name="divider">#e9e9e9</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!-- CategoryColor-->
+    <color name="colorIssue">#9573b0</color>
+    <color name="colorPureWater">#e3bec5</color>
+    <color name="colorWater">#8ecbea</color>
+    <color name="colorElc">#f6ec7d</color>
+    <color name="colorFood">#a5d58b</color>
+    <color name="colorGas">#ec5f82</color>
+    <color name="colorOthers">#fed085</color>
+
+    <color name="colorPrimary">#424242</color>
+    <color name="colorPrimaryDark">#222222</color>
+    <color name="colorAccent">#01bbd2</color>
     <color name="textColor">#666666</color>
     <color name="textColorPrimary">#949494</color>
     <color name="textColorSecondary">#d0d0d0</color>
