@@ -46,12 +46,7 @@
     <include layout="@layout/content_detail"
         />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:layout_collapseMode="pin" />
+
 
 
 </android.support.design.widget.CoordinatorLayout>

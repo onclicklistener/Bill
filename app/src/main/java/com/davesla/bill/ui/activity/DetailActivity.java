@@ -2,11 +2,9 @@ package com.davesla.bill.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 
 import com.davesla.bill.R;
@@ -25,7 +23,7 @@ import java.util.ArrayList;
 public class DetailActivity extends BaseActivity {
     private AppBarLayout appBarLayout;
     private LinearLayout layoutTitle;
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
     private SuperRecyclerView recyclerView;
 
     private int statusBarHeight;
@@ -46,12 +44,8 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("第一期账单");
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        colorStatusBar();
 
+        colorStatusBar();
         initChart();
         setData();
 
@@ -62,8 +56,7 @@ public class DetailActivity extends BaseActivity {
                     statusBarHeight = SystemInfoUtil.getStatusBarHeight(DetailActivity.this);
                 }
 
-                float alpha = Math.abs(verticalOffset) / ((float) layoutTitle.getHeight() - statusBarHeight - toolbar.getHeight());
-                toolbar.setAlpha(alpha);
+                float alpha = Math.abs(verticalOffset) / ((float) layoutTitle.getHeight() - statusBarHeight);
 
             }
         });
@@ -93,6 +86,7 @@ public class DetailActivity extends BaseActivity {
         barChart.setDrawBarShadow(false);
         barChart.setDrawGridBackground(false);
         barChart.setHighlightPerTapEnabled(false);
+        barChart.setDrawValueAboveBar(true);
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -133,9 +127,10 @@ public class DetailActivity extends BaseActivity {
 
         int colors[] = new int[]{getResources().getColor(R.color.colorAccent)};
         BarDataSet barDataSet = new BarDataSet(barEntries, "各项支出");
-        barDataSet.setValueTextColor(Color.WHITE);
+        barDataSet.setValueTextColor(getResourceColor(R.color.textGray));
+        barDataSet.setValueTextSize(8f);
         barDataSet.setColors(colors);
-        barDataSet.setDrawValues(false);
+        barDataSet.setDrawValues(true);
 
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
         dataSets.add(barDataSet);

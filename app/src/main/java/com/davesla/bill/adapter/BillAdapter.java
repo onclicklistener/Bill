@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.davesla.bill.R;
 import com.davesla.bill.ui.activity.BaseActivity;
+import com.davesla.bill.ui.activity.DetailActivity;
 import com.davesla.bill.util.DensityUtil;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -50,7 +51,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         return 20;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         HorizontalBarChart mChart;
 
         public ViewHolder(View itemView) {
@@ -74,8 +75,14 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             mChart.getAxisRight().setDrawLabels(false);
 
             mChart.getAxisLeft().setDrawGridLines(false);
+
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            DetailActivity.start(context);
+        }
     }
 
     private void setData(HorizontalBarChart mChart) {
