@@ -40,7 +40,7 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
     protected void initData() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(billAdapter = new BillAdapter(getBaseActivity(), billGroups));
+        recyclerView.setAdapter(billAdapter = new BillAdapter(recyclerView,getBaseActivity(), billGroups));
 
         recyclerView.setRefreshListener(this);
 

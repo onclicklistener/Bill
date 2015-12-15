@@ -20,6 +20,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -29,10 +30,12 @@ import java.util.ArrayList;
  */
 public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
 
+    private SuperRecyclerView recyclerView;
     private BaseActivity context;
     private ArrayList<BillGroup> billGroups;
 
-    public BillAdapter(BaseActivity context, ArrayList<BillGroup> billGroups) {
+    public BillAdapter(SuperRecyclerView recyclerView,BaseActivity context, ArrayList<BillGroup> billGroups) {
+        this.recyclerView = recyclerView;
         this.context = context;
         this.billGroups = billGroups;
     }
@@ -118,7 +121,8 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            DetailActivity.start(context);
+            int position = recyclerView.getRecyclerView().getChildAdapterPosition(v);
+            DetailActivity.start(context,billGroups.get(position).bills);
         }
     }
 

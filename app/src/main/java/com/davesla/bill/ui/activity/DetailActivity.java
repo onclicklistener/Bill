@@ -2,14 +2,12 @@ package com.davesla.bill.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
 
 import com.davesla.bill.R;
 import com.davesla.bill.adapter.DetailAdapter;
-import com.davesla.bill.util.SystemInfoUtil;
+import com.davesla.bill.service.bean.Bill;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -19,14 +17,16 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class DetailActivity extends BaseActivity {
-    private AppBarLayout appBarLayout;
-    private LinearLayout layoutTitle;
-    //private Toolbar toolbar;
+    private static final String BILL_EXTRA = "BILL_EXTRA";
+
+    private ArrayList<Bill> bills;
     private SuperRecyclerView recyclerView;
 
-    private int statusBarHeight;
     private BarChart barChart;
 
     @Override
@@ -36,34 +36,20 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         barChart = (BarChart) findViewById(R.id.chart);
-        layoutTitle = (LinearLayout) findViewById(R.id.layout_title);
         recyclerView = (SuperRecyclerView) findViewById(R.id.list);
     }
 
     @Override
     protected void initData() {
-
+        bills = getIntent().getParcelableArrayListExtra(BILL_EXTRA);
         colorStatusBar();
         initChart();
         setData();
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (statusBarHeight == 0) {
-                    statusBarHeight = SystemInfoUtil.getStatusBarHeight(DetailActivity.this);
-                }
-
-                float alpha = Math.abs(verticalOffset) / ((float) layoutTitle.getHeight() - statusBarHeight);
-
-            }
-        });
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new DetailAdapter(this));
+        recyclerView.setAdapter(new DetailAdapter(recyclerView,this,bills));
 
         recyclerView.setupSwipeToDismiss(new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
             @Override
@@ -100,30 +86,34 @@ public class DetailActivity extends BaseActivity {
         barChart.getAxisRight().setDrawAxisLine(false);
         barChart.getAxisRight().setDrawLabels(false);
 
-
         barChart.getAxisLeft().setDrawGridLines(false);
 
     }
 
     private void setData() {
+        LinkedHashMap<String, Double> billMap = new LinkedHashMap<>();
+        billMap.put("纯净水", 0d);
+        billMap.put("生活用品", 0d);
+        billMap.put("电费", 0d);
+        billMap.put("水费", 0d);
+        billMap.put("食品", 0d);
+        billMap.put("燃气费", 0d);
+        billMap.put("其他", 0d);
+
         ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
-
-        barEntries.add(new BarEntry(50, 0));
-        barEntries.add(new BarEntry(70, 1));
-        barEntries.add(new BarEntry(300, 2));
-        barEntries.add(new BarEntry(100, 3));
-        barEntries.add(new BarEntry(600, 4));
-        barEntries.add(new BarEntry(400, 5));
-        barEntries.add(new BarEntry(200, 6));
-
+        for (Bill bill : bills) {
+            billMap.put(bill.getCategoryName(), billMap.get(bill.getCategoryName()) + bill.getCost());
+        }
         ArrayList<String> names = new ArrayList<String>();
-        names.add("纯净水");
-        names.add("生活用品");
-        names.add("电费");
-        names.add("水费");
-        names.add("食品");
-        names.add("燃气费");
-        names.add("其它");
+
+        Iterator<Map.Entry<String, Double>> iterator = billMap.entrySet().iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            Map.Entry<String, Double> entry = iterator.next();
+            names.add(entry.getKey());
+            barEntries.add(new BarEntry((entry.getValue()).intValue(), index));
+            index++;
+        }
 
         int colors[] = new int[]{getResources().getColor(R.color.colorAccent)};
         BarDataSet barDataSet = new BarDataSet(barEntries, "各项支出");
@@ -145,58 +135,9 @@ public class DetailActivity extends BaseActivity {
     }
 
 
-//    private void setRightData() {
-//        ArrayList<Entry> entries = new ArrayList<Entry>();
-//
-//        entries.add(new Entry(50.f, 0));
-//        entries.add(new Entry(60.f, 0));
-//        entries.add(new Entry(70.f, 0));
-//        entries.add(new Entry(70.f, 0));
-//        entries.add(new Entry(200.f, 0));
-//        entries.add(new Entry(300.f, 0));
-//
-//        ArrayList<String> names = new ArrayList<String>();
-//        names.add("纯净水");
-//        names.add("水费");
-//        names.add("电费");
-//        names.add("买菜");
-//        names.add("厨房用具");
-//        names.add("其它");
-//
-//        PieDataSet dataSet = new PieDataSet(entries, "各项支出");
-//        dataSet.setSliceSpace(2f);
-//        dataSet.setSelectionShift(5f);
-//
-//        ArrayList<Integer> colors = new ArrayList<Integer>();
-//        colors.add(Color.rgb(44, 133, 191));
-//        colors.add(Color.rgb(122, 176, 88));
-//        colors.add(Color.rgb(224, 72, 93));
-//        colors.add(Color.rgb(112, 72, 93));
-//        colors.add(Color.rgb(224, 200, 93));
-//        colors.add(Color.rgb(224, 72, 200));
-//        dataSet.setColors(colors);
-//
-//        PieData data = new PieData(names, dataSet);
-//        data.setValueFormatter(new PercentFormatter());
-//        data.setValueTextSize(10f);
-//        data.setValueTextColor(Color.WHITE);
-//        barChart.setData(data);
-//        barChart.highlightValues(null);
-//
-//
-//        barChart.invalidate();
-//
-//        barChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-//
-//        Legend l = barChart.getLegend();
-//        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-//        l.setXEntrySpace(7f);
-//        l.setYEntrySpace(0f);
-//        l.setYOffset(0f);
-//    }
-
-    public static void start(Context context) {
+    public static void start(Context context, ArrayList<Bill> bills) {
         Intent intent = new Intent(context, DetailActivity.class);
+        intent.putParcelableArrayListExtra(BILL_EXTRA, bills);
         context.startActivity(intent);
     }
 }
