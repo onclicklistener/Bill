@@ -1,6 +1,7 @@
 package com.davesla.bill.service.bean;
 
 import android.annotation.SuppressLint;
+import android.os.Parcel;
 
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
@@ -13,11 +14,14 @@ import java.util.Date;
 @SuppressLint("ParcelCreator")
 @AVClassName("Bill")
 public class Bill extends AVObject{
-    private String categoryName;
-    private double cost;
-    private String userName;
-    private String detail;
-    private Date clearDate;
+    public Bill(){
+    }
+
+    public Bill(Parcel in){
+        super(in);
+    }
+
+    public static final Creator CREATOR = AVObjectCreator.instance;
 
     public String getCategoryName() {
         return getString("categoryName");

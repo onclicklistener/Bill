@@ -31,6 +31,7 @@ public class BillWidget extends LinearLayout {
     }
 
     public void setup(BillGroup billGroup) {
+        this.removeAllViews();
         ArrayList<Double> costs = billGroup.costs;
         ArrayList<String> users = billGroup.users;
         double totalCost = 0d;
@@ -56,10 +57,7 @@ public class BillWidget extends LinearLayout {
 
         ArrayList<CostBill> costBills = payMeTheMoney(highCosts, lowCosts, aveCost);
 
-        System.out.println(billGroup.title);
         for (CostBill costBill : costBills) {
-            System.out.println(costBill.from + " 应付给 " + costBill.to + " " + costBill.cost);
-
             View view = LayoutInflater.from(getContext()).inflate(R.layout.piece_pay, null, false);
             ImageView avatarPay = (ImageView) view.findViewById(R.id.iv_avatar_pay);
             ImageView avatarPaid = (ImageView) view.findViewById(R.id.iv_avatar_paid);

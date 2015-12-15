@@ -44,14 +44,14 @@ public class BillService {
                     for (int i = 0; i < avObjects.size(); i++) {
                         AVObject avObject = avObjects.get(i);
                         Bill bill = (Bill) avObject;
-                        if (costMap.containsKey(bill.getUserName())) {
-                            double value = costMap.get(bill.getUserName()) + bill.getCost();
-                            costMap.put(bill.getUserName(), value);
-                        } else {
-                            costMap.put(bill.getUserName(), bill.getCost());
-                        }
 
                         if (bill.getClearDate().getTime() == currentDate.getTime()) {
+                            if (costMap.containsKey(bill.getUserName())) {
+                                double value = costMap.get(bill.getUserName()) + bill.getCost();
+                                costMap.put(bill.getUserName(), value);
+                            } else {
+                                costMap.put(bill.getUserName(), bill.getCost());
+                            }
                             billGroup.bills.add(bill);
                         } else {
                             Iterator iter = costMap.entrySet().iterator();
@@ -72,6 +72,12 @@ public class BillService {
                             billGroup.bills = new ArrayList<>();
                             billGroup.users = new ArrayList<>();
                             billGroup.costs = new ArrayList<>();
+                            if (costMap.containsKey(bill.getUserName())) {
+                                double value = costMap.get(bill.getUserName()) + bill.getCost();
+                                costMap.put(bill.getUserName(), value);
+                            } else {
+                                costMap.put(bill.getUserName(), bill.getCost());
+                            }
                             billGroup.bills.add(bill);
                         }
                     }
