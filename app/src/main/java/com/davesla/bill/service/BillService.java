@@ -26,7 +26,7 @@ public class BillService {
 
     public static void getBillGroups(final OnGetBillGroupsHandler onGetBillGroupsHandler) {
         AVQuery<AVObject> query = new AVQuery<AVObject>("Bill");
-        query.orderByDescending("clearDate");
+        query.orderByAscending("clearDate");
         query.findInBackground(new FindCallback<AVObject>() {
             public void done(List<AVObject> avObjects, AVException e) {
                 if (e == null) {
@@ -35,7 +35,6 @@ public class BillService {
                     billGroup.bills = new ArrayList<>();
                     billGroup.users = new ArrayList<>();
                     billGroup.costs = new ArrayList<>();
-                    billGroup.title = "第1期账单";
                     Bill firstBill = ((Bill) avObjects.get(0));
                     Date currentDate = firstBill.getClearDate();
                     billGroup.start = firstBill.getCreatedAt();
@@ -68,7 +67,6 @@ public class BillService {
                             costMap = new HashMap<String, Double>();
 
                             billGroup = new BillGroup();
-                            billGroup.title = "第" + (billGroups.size() + 1) + "期账单";
                             billGroup.start = bill.getCreatedAt();
                             billGroup.end = bill.getClearDate();
                             billGroup.bills = new ArrayList<>();
@@ -86,6 +84,26 @@ public class BillService {
                         billGroup.costs.add((Double) val);
                     }
                     billGroups.add(billGroup);
+                    for (int i = 0; i < billGroups.size(); i++) {
+                        BillGroup bill = billGroups.get(i);
+                        bill.title = "第" + (billGroups.size() - i) + "期账单";
+                        ArrayList<String> users = bill.users;
+                        if (users.size() < bill.groupMembers.length) {
+                            for (String name : bill.groupMembers) {
+                                boolean isExist = false;
+                                for (String user : users) {
+                                    if (name.equals(user)) {
+                                        isExist = true;
+                                        break;
+                                    }
+                                }
+                                if (!isExist) {
+                                    bill.users.add(name);
+                                    bill.costs.add(0d);
+                                }
+                            }
+                        }
+                    }
                     onGetBillGroupsHandler.onSucceed(billGroups);
 
                 } else {

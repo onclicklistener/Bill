@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
@@ -57,6 +58,8 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         holder.name.setText(bill.getUserName());
         holder.category.setText(bill.getCategoryName());
         holder.cost.setText(bill.getCost() + "");
+        holder.date.setText(DateFormat.getDateInstance(DateFormat.DEFAULT).format(billGroup.start) + "-"
+                + DateFormat.getDateInstance(DateFormat.DEFAULT).format(billGroup.end));
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.mChart.getLayoutParams();
         params.height = DensityUtil.dip2px(context, 33 * billGroup.groupMembers.length);
@@ -65,8 +68,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         holder.mChart.animateY(500);
         holder.mChart.getLegend().setEnabled(false);
 
-        BillWidget billWidget = new BillWidget(context);
-        billWidget.setup(billGroup);
+        holder.billWidget.setup(billGroup);
 
     }
 
@@ -76,10 +78,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title, name, category, cost;
+        TextView title, name, category, cost, date;
         ImageView avatar;
-        LinearLayout layoutPay;
         HorizontalBarChart mChart;
+        BillWidget billWidget;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -88,8 +90,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             name = (TextView) itemView.findViewById(R.id.tv_name);
             category = (TextView) itemView.findViewById(R.id.tv_category);
             cost = (TextView) itemView.findViewById(R.id.tv_cost);
+            date = (TextView) itemView.findViewById(R.id.tv_date);
             avatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
-            layoutPay = (LinearLayout) itemView.findViewById(R.id.layout_pay);
+            billWidget = (BillWidget) itemView.findViewById(R.id.bill);
 
             mChart.setDescription("");
             mChart.setMaxVisibleValueCount(60);
@@ -126,20 +129,6 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         for (int i = 0; i < billGroup.users.size(); i++) {
             xVals.add(billGroup.users.get(i));
             barEntries.add(new BarEntry(billGroup.costs.get(i).intValue(), i));
-        }
-        if (billGroup.groupMembers.length > billGroup.users.size()) {
-            for (String member : billGroup.groupMembers) {
-                boolean hasContain = false;
-                for (String user : billGroup.users) {
-                    if (member.equals(user)) {
-                        hasContain = true;
-                    }
-                }
-                if (!hasContain) {
-                    xVals.add(member);
-                    barEntries.add(new BarEntry(0, xVals.size() - 1));
-                }
-            }
         }
 
         int colors[] = new int[]{context.getResourceColor(R.color.colorAccent)};

@@ -50,14 +50,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white" />
 
-        <LinearLayout
-            android:id="@+id/layout_pay"
+        <com.davesla.bill.ui.widget.BillWidget
+            android:id="@+id/bill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
-
-        </LinearLayout>
+            android:layout_margin="8dp" />
 
         <View
             android:layout_width="match_parent"
