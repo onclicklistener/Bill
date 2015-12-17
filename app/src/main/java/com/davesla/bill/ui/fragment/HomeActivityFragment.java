@@ -57,7 +57,7 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
         handler.post(new Runnable() {
             @Override
             public void run() {
-                billGroups.clear();
+                HomeActivityFragment.this.billGroups.clear();
                 HomeActivityFragment.this.billGroups.addAll(billGroups);
                 billAdapter.notifyDataSetChanged();
             }

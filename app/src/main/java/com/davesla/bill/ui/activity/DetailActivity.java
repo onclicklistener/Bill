@@ -2,11 +2,17 @@ package com.davesla.bill.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
 import com.davesla.bill.R;
 import com.davesla.bill.adapter.DetailAdapter;
+import com.davesla.bill.service.BillService;
 import com.davesla.bill.service.bean.Bill;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -17,18 +23,26 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DetailActivity extends BaseActivity {
     private static final String BILL_EXTRA = "BILL_EXTRA";
+    private static final String CLEAR_EXTRA = "CLEAR_EXTRA";
+    private static final String INDEX_EXTRA = "INDEX_EXTRA";
 
     private ArrayList<Bill> bills;
+    private boolean isClear;
+    private int index;
+
     private SuperRecyclerView recyclerView;
+    private Button btnClear;
+    private TextView textTotal;
 
     private BarChart barChart;
+
+    private static Handler handler = new Handler();
 
     @Override
     protected void setContent() {
@@ -39,19 +53,22 @@ public class DetailActivity extends BaseActivity {
     protected void initView() {
         barChart = (BarChart) findViewById(R.id.chart);
         recyclerView = (SuperRecyclerView) findViewById(R.id.list);
+        btnClear = (Button) findViewById(R.id.btn_clear);
+        textTotal = (TextView) findViewById(R.id.tv_total);
     }
 
     @Override
     protected void initData() {
+        index = getIntent().getIntExtra(INDEX_EXTRA,-1);
+        isClear = getIntent().getBooleanExtra(CLEAR_EXTRA, false);
         bills = getIntent().getParcelableArrayListExtra(BILL_EXTRA);
-        Collections.reverse(bills);
         colorStatusBar();
         initChart();
         setData();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new DetailAdapter(recyclerView,this,bills));
+        recyclerView.setAdapter(new DetailAdapter(recyclerView, this, bills));
 
         recyclerView.setupSwipeToDismiss(new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
             @Override
@@ -62,6 +79,41 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
 
+            }
+        });
+
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+        float total = 0f;
+        for (Bill bill : bills) {
+            total += bill.getCost();
+        }
+
+        textTotal.setText("¥" + df.format(total));
+
+        btnClear.setEnabled(!isClear);
+        btnClear.setText(isClear ? "已结算" : "结算");
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BillService.clear(bills, index, new BillService.OnClearHandler() {
+                    @Override
+                    public void onSucceed() {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                showToast("已结算");
+                                btnClear.setText("已结算");
+                                btnClear.setEnabled(false);
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onFailed(AVException e) {
+                        showToast("结算出错:" + e.toString());
+                    }
+                });
             }
         });
     }
@@ -137,9 +189,11 @@ public class DetailActivity extends BaseActivity {
     }
 
 
-    public static void start(Context context, ArrayList<Bill> bills) {
+    public static void start(Context context, ArrayList<Bill> bills, boolean isClear,int index) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putParcelableArrayListExtra(BILL_EXTRA, bills);
+        intent.putExtra(CLEAR_EXTRA, isClear);
+        intent.putExtra(INDEX_EXTRA,index);
         context.startActivity(intent);
     }
 }

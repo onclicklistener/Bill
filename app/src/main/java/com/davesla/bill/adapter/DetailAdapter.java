@@ -13,6 +13,7 @@ import com.davesla.bill.service.bean.Bill;
 import com.davesla.bill.ui.activity.BaseActivity;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -58,6 +59,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         } else {
             holder.avatar.setImageResource(R.drawable.ic_avatar_feng);
         }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        holder.date.setText("添加于 " + format.format(bill.getCreatedAt()));
     }
 
     @Override

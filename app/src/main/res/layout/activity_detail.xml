@@ -25,28 +25,51 @@
             <LinearLayout
                 android:id="@+id/layout_title"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:orientation="vertical"
+                android:layout_height="300dp"
                 android:background="@color/colorPrimary"
-                app:layout_collapseMode="parallax">
+                android:orientation="vertical">
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/chart"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:background="@color/colorPrimary"
-                    />
-
+                    android:background="@color/colorPrimary" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="84dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_total"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.0"
+                        android:textSize="32dp"
+                        android:textColor="@color/textColorSecondary"
+                        android:paddingLeft="24dp"
+                        android:gravity="center_vertical"
+                        android:text="$ 1024"
+                        />
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btn_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="12dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:theme="@style/AppTheme.Button"
+                        android:text="结算"
+                        android:backgroundTint="@color/colorAccent"
+                        />
+                    </LinearLayout>
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_detail"
-        />
-
-
+    <include layout="@layout/content_detail" />
 
 
 </android.support.design.widget.CoordinatorLayout>

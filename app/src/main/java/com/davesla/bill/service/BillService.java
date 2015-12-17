@@ -7,6 +7,7 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.davesla.bill.service.bean.Bill;
 import com.davesla.bill.service.bean.BillGroup;
+import com.davesla.bill.service.bean.ClearDate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,67 @@ import java.util.Map;
  * Created by hwb on 15/12/14.
  */
 public class BillService {
+    public interface OnClearHandler {
+        void onSucceed();
+
+        void onFailed(AVException e);
+    }
+
+    public static void clear(final ArrayList<Bill> bills, final int index, final OnClearHandler onClearHandler) {
+        final Date nowDate = new Date(System.currentTimeMillis());
+        AVQuery<AVObject> query = new AVQuery<AVObject>("ClearDate");
+        query.orderByAscending("date").findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    final ClearDate preClearDate = (ClearDate) list.get(0);
+                    preClearDate.setDate(nowDate);
+                    preClearDate.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e == null) {
+                                for (Bill bill : bills) {
+                                    bill.setClearDate(nowDate);
+                                }
+
+                                ClearDate clearDate = new ClearDate();
+                                clearDate.setIndex(index);
+                                clearDate.setDate(new Date(-28800000));
+                                clearDate.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            Bill.saveAllInBackground(bills, new SaveCallback() {
+                                                @Override
+                                                public void done(AVException e) {
+                                                    if (e == null) {
+                                                        onClearHandler.onSucceed();
+                                                    } else {
+                                                        onClearHandler.onFailed(e);
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            onClearHandler.onFailed(e);
+                                        }
+                                    }
+                                });
+                            } else {
+                                onClearHandler.onFailed(e);
+                            }
+                        }
+                    });
+
+                } else {
+                    onClearHandler.onFailed(e);
+                }
+            }
+        });
+
+
+    }
+
+
     public interface OnAddBillHandler {
         void onSucceed();
 
@@ -46,7 +108,7 @@ public class BillService {
 
     public static void getBillGroups(final OnGetBillGroupsHandler onGetBillGroupsHandler) {
         AVQuery<AVObject> query = new AVQuery<AVObject>("Bill");
-        query.orderByAscending("clearDate");
+        query.orderByDescending("clearDate");
         query.findInBackground(new FindCallback<AVObject>() {
             public void done(List<AVObject> avObjects, AVException e) {
                 if (e == null) {
@@ -109,7 +171,11 @@ public class BillService {
                         billGroup.users.add((String) key);
                         billGroup.costs.add((Double) val);
                     }
-                    billGroups.add(billGroup);
+                    if (billGroup.end.getTime() == -28800000) {
+                        billGroups.add(0, billGroup);
+                    } else {
+                        billGroups.add(billGroup);
+                    }
                     for (int i = 0; i < billGroups.size(); i++) {
                         BillGroup bill = billGroups.get(i);
                         bill.title = "第" + (billGroups.size() - i) + "期账单";

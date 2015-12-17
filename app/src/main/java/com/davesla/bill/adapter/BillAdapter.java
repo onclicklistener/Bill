@@ -34,7 +34,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
     private BaseActivity context;
     private ArrayList<BillGroup> billGroups;
 
-    public BillAdapter(SuperRecyclerView recyclerView,BaseActivity context, ArrayList<BillGroup> billGroups) {
+    public BillAdapter(SuperRecyclerView recyclerView, BaseActivity context, ArrayList<BillGroup> billGroups) {
         this.recyclerView = recyclerView;
         this.context = context;
         this.billGroups = billGroups;
@@ -49,8 +49,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(BillAdapter.ViewHolder holder, int position) {
         BillGroup billGroup = billGroups.get(position);
+
         holder.title.setText(billGroup.title);
-        Bill bill = billGroup.bills.get(billGroup.bills.size() - 1);
+        Bill bill = billGroup.bills.get(0);
         if (bill.getUserName().equals("何卫兵")) {
             holder.avatar.setImageResource(R.drawable.ic_avatar_bing);
         } else if (bill.getUserName().equals("王正昕")) {
@@ -62,7 +63,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         holder.category.setText(bill.getCategoryName());
         holder.cost.setText(bill.getCost() + "");
         holder.date.setText(DateFormat.getDateInstance(DateFormat.DEFAULT).format(billGroup.start) + "-"
-                + DateFormat.getDateInstance(DateFormat.DEFAULT).format(billGroup.end));
+                + ((billGroup.end.getTime() == -28800000) ? "现在" : DateFormat.getDateInstance(DateFormat.DEFAULT).format(billGroup.end)));
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.mChart.getLayoutParams();
         params.height = DensityUtil.dip2px(context, 33 * billGroup.groupMembers.length);
@@ -72,7 +73,6 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         holder.mChart.getLegend().setEnabled(false);
 
         holder.billWidget.setup(billGroup);
-
     }
 
     @Override
@@ -122,7 +122,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             int position = recyclerView.getRecyclerView().getChildAdapterPosition(v);
-            DetailActivity.start(context,billGroups.get(position).bills);
+            DetailActivity.start(context, billGroups.get(position).bills, !(billGroups.get(position).end.getTime() == -28800000), billGroups.size());
         }
     }
 

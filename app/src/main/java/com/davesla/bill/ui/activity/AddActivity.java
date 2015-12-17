@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -76,7 +77,7 @@ public class AddActivity extends BaseActivity {
         categoryList.add("食品");
         categoryList.add("电费");
         categoryList.add("燃气费");
-        categoryList.add("其它");
+        categoryList.add("其他");
         spinnerAvatar.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, userList));
         spinnerCategory.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryList));
 
@@ -118,7 +119,7 @@ public class AddActivity extends BaseActivity {
         textSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editCost.getText() == null) {
+                if (TextUtils.isEmpty(editCost.getText().toString())) {
                     showToast("请输入金额");
                     return;
                 }
