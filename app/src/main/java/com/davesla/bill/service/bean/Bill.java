@@ -28,7 +28,7 @@ public class Bill extends AVObject{
     }
 
     public void setCategoryName(String categoryName) {
-        put("category",categoryName);
+        put("categoryName",categoryName);
     }
 
     public double getCost() {

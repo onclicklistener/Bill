@@ -4,6 +4,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.davesla.bill.service.bean.Bill;
 import com.davesla.bill.service.bean.BillGroup;
 
@@ -18,6 +19,25 @@ import java.util.Map;
  * Created by hwb on 15/12/14.
  */
 public class BillService {
+    public interface OnAddBillHandler {
+        void onSucceed();
+
+        void onFailed(AVException e);
+    }
+
+    public static void addBill(Bill bill, final OnAddBillHandler onAddBillHandler) {
+        bill.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    onAddBillHandler.onSucceed();
+                } else {
+                    onAddBillHandler.onFailed(e);
+                }
+            }
+        });
+    }
+
     public interface OnGetBillGroupsHandler {
         void onSucceed(ArrayList<BillGroup> billGroups);
 

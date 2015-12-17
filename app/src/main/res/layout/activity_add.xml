@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.davesla.bill.ui.activity.AddActivity">
 
-    <com.davesla.bill.ui.widget.MKeyboard
-        android:id="@+id/keyboard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
-    <TextView
-        android:id="@+id/tv_cost"
+    <EditText
+        android:id="@+id/et_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:hint="0.00"
+        android:inputType="numberDecimal"
         android:paddingBottom="32dp"
-        android:paddingLeft="56dp"
+        android:paddingLeft="80dp"
         android:paddingTop="32dp"
-        android:text="2.99 $"
+        android:textColor="@color/white"
+        android:textSize="48dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:paddingBottom="32dp"
+        android:paddingLeft="36dp"
+        android:paddingTop="32dp"
+        android:text="¥"
         android:textColor="@color/white"
         android:textSize="48dp" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tv_cost">
+        android:layout_below="@id/et_cost">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,6 +41,7 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Thursday,January 29,2015,17:16"
@@ -43,67 +49,68 @@
                 android:textSize="16sp" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
+                    android:id="@+id/iv_avatar"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_avatar_bing"
-                    />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_bing" />
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinner_user"
                     android:layout_width="match_parent"
-                    android:layout_marginLeft="32dp"
-                    android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                >
-                <ImageView
-                    android:id="@+id/iv_catrgory"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_avatar_bing"
-                    />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinner_category"
-                    android:layout_width="match_parent"
-                    android:layout_marginLeft="32dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
-                >
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_category"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_label" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/spinner_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:id="@+id/iv_remarks"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_remarks"
-                    />
+                    android:src="@drawable/ic_remarks" />
 
                 <EditText
                     android:id="@+id/et_remarks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="32dp"
-
-                    />
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="16sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -111,9 +118,29 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@drawable/shandow"/>
+            android:background="@drawable/shadow" />
     </FrameLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/colorBackground"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/shadow_reverse" />
+    </FrameLayout>
 
 </RelativeLayout>

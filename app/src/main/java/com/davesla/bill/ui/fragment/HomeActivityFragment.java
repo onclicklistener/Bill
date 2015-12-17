@@ -40,7 +40,7 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
     protected void initData() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(billAdapter = new BillAdapter(recyclerView,getBaseActivity(), billGroups));
+        recyclerView.setAdapter(billAdapter = new BillAdapter(recyclerView, getBaseActivity(), billGroups));
 
         recyclerView.setRefreshListener(this);
 
@@ -49,7 +49,6 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        billGroups.clear();
         BillService.getBillGroups(this);
     }
 
@@ -58,6 +57,7 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
         handler.post(new Runnable() {
             @Override
             public void run() {
+                billGroups.clear();
                 HomeActivityFragment.this.billGroups.addAll(billGroups);
                 billAdapter.notifyDataSetChanged();
             }

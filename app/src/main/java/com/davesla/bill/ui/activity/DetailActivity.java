@@ -17,6 +17,7 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class DetailActivity extends BaseActivity {
     @Override
     protected void initData() {
         bills = getIntent().getParcelableArrayListExtra(BILL_EXTRA);
+        Collections.reverse(bills);
         colorStatusBar();
         initChart();
         setData();
