@@ -2,11 +2,13 @@ package com.davesla.bill.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.davesla.bill.R;
+import com.davesla.bill.bean.event.OnAddEvent;
 import com.davesla.bill.service.BillService;
 import com.davesla.bill.service.bean.Bill;
 
@@ -23,6 +26,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import de.greenrobot.event.EventBus;
 
 public class AddActivity extends BaseActivity {
     private List<String> userList = new ArrayList<>();
@@ -127,6 +132,14 @@ public class AddActivity extends BaseActivity {
             }
         });
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager inputManager = (InputMethodManager) editCost.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(editCost, 0);
+            }
+        }, 200);
 
     }
 
@@ -141,6 +154,7 @@ public class AddActivity extends BaseActivity {
             @Override
             public void onSucceed() {
                 showToast("添加成功");
+                EventBus.getDefault().post(new OnAddEvent());
                 finish();
             }
 

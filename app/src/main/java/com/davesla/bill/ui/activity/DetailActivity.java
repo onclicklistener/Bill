@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.davesla.bill.R;
 import com.davesla.bill.adapter.DetailAdapter;
+import com.davesla.bill.bean.event.OnClearEvent;
 import com.davesla.bill.service.BillService;
 import com.davesla.bill.service.bean.Bill;
 import com.github.mikephil.charting.charts.BarChart;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import de.greenrobot.event.EventBus;
 
 public class DetailActivity extends BaseActivity {
     private static final String BILL_EXTRA = "BILL_EXTRA";
@@ -59,7 +62,7 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        index = getIntent().getIntExtra(INDEX_EXTRA,-1);
+        index = getIntent().getIntExtra(INDEX_EXTRA, -1);
         isClear = getIntent().getBooleanExtra(CLEAR_EXTRA, false);
         bills = getIntent().getParcelableArrayListExtra(BILL_EXTRA);
         colorStatusBar();
@@ -104,6 +107,7 @@ public class DetailActivity extends BaseActivity {
                                 showToast("已结算");
                                 btnClear.setText("已结算");
                                 btnClear.setEnabled(false);
+                                EventBus.getDefault().post(new OnClearEvent());
                             }
                         });
 

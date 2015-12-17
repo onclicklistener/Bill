@@ -73,6 +73,12 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         holder.mChart.getLegend().setEnabled(false);
 
         holder.billWidget.setup(billGroup);
+
+        if (billGroup.end.getTime() == -28800000) {
+            holder.clear.setVisibility(View.GONE);
+        } else {
+            holder.clear.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -82,7 +88,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title, name, category, cost, date;
-        ImageView avatar;
+        ImageView avatar, clear;
         HorizontalBarChart mChart;
         BillWidget billWidget;
 
@@ -95,6 +101,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
             cost = (TextView) itemView.findViewById(R.id.tv_cost);
             date = (TextView) itemView.findViewById(R.id.tv_date);
             avatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
+            clear = (ImageView) itemView.findViewById(R.id.iv_clear);
             billWidget = (BillWidget) itemView.findViewById(R.id.bill);
 
             mChart.setDescription("");
