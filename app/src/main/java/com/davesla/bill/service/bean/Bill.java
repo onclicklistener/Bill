@@ -13,11 +13,11 @@ import java.util.Date;
  */
 @SuppressLint("ParcelCreator")
 @AVClassName("Bill")
-public class Bill extends AVObject{
-    public Bill(){
+public class Bill extends AVObject implements Comparable<Bill> {
+    public Bill() {
     }
 
-    public Bill(Parcel in){
+    public Bill(Parcel in) {
         super(in);
     }
 
@@ -28,7 +28,7 @@ public class Bill extends AVObject{
     }
 
     public void setCategoryName(String categoryName) {
-        put("categoryName",categoryName);
+        put("categoryName", categoryName);
     }
 
     public double getCost() {
@@ -36,7 +36,7 @@ public class Bill extends AVObject{
     }
 
     public void setCost(float cost) {
-        put("cost",cost);
+        put("cost", cost);
     }
 
     public String getUserName() {
@@ -44,7 +44,7 @@ public class Bill extends AVObject{
     }
 
     public void setUserName(String userName) {
-        put("userName",userName);
+        put("userName", userName);
     }
 
     public String getDetail() {
@@ -52,7 +52,7 @@ public class Bill extends AVObject{
     }
 
     public void setDetail(String detail) {
-       put("detail",detail);
+        put("detail", detail);
     }
 
     public Date getClearDate() {
@@ -60,6 +60,14 @@ public class Bill extends AVObject{
     }
 
     public void setClearDate(Date clearDate) {
-       put("clearDate",clearDate);
+        put("clearDate", clearDate);
+    }
+
+    @Override
+    public int compareTo(Bill another) {
+        if (this.getCreatedAt().getTime() > another.getCreatedAt().getTime()) {
+            return -1;
+        }
+        return 1;
     }
 }

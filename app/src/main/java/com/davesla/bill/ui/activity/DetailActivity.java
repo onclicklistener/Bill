@@ -13,6 +13,7 @@ import com.avos.avoscloud.AVException;
 import com.davesla.bill.R;
 import com.davesla.bill.adapter.DetailAdapter;
 import com.davesla.bill.bean.event.OnClearEvent;
+import com.davesla.bill.bean.event.OnDeleteEvent;
 import com.davesla.bill.service.BillService;
 import com.davesla.bill.service.bean.Bill;
 import com.github.mikephil.charting.charts.BarChart;
@@ -37,11 +38,11 @@ public class DetailActivity extends BaseActivity {
 
     private ArrayList<Bill> bills;
     private boolean isClear;
-    private int index;
 
     private SuperRecyclerView recyclerView;
     private Button btnClear;
     private TextView textTotal;
+    private DetailAdapter adapter;
 
     private BarChart barChart;
 
@@ -62,7 +63,6 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        index = getIntent().getIntExtra(INDEX_EXTRA, -1);
         isClear = getIntent().getBooleanExtra(CLEAR_EXTRA, false);
         bills = getIntent().getParcelableArrayListExtra(BILL_EXTRA);
         colorStatusBar();
@@ -71,39 +71,52 @@ public class DetailActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(new DetailAdapter(recyclerView, this, bills));
+        recyclerView.setAdapter(adapter = new DetailAdapter(recyclerView, this, bills));
 
         recyclerView.setupSwipeToDismiss(new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
             @Override
             public boolean canDismiss(int position) {
-                return true;
+                return !isClear;
             }
 
             @Override
             public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                final int position = reverseSortedPositions[0];
+                Bill bill = bills.get(position);
+                BillService.remove(bill, new BillService.OnRemoveHandler() {
+                    @Override
+                    public void onSucceed() {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                bills.remove(position);
+                                setData();
+                                adapter.notifyDataSetChanged();
+                                EventBus.getDefault().post(new OnDeleteEvent());
+                            }
+                        });
+                    }
 
+                    @Override
+                    public void onFailed(AVException e) {
+
+                    }
+                });
             }
         });
-
-        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
-        float total = 0f;
-        for (Bill bill : bills) {
-            total += bill.getCost();
-        }
-
-        textTotal.setText("¥" + df.format(total));
 
         btnClear.setEnabled(!isClear);
         btnClear.setText(isClear ? "已结算" : "结算");
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BillService.clear(bills, index, new BillService.OnClearHandler() {
+                BillService.clear(bills, new BillService.OnClearHandler() {
                     @Override
                     public void onSucceed() {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                isClear = true;
                                 showToast("已结算");
                                 btnClear.setText("已结算");
                                 btnClear.setEnabled(false);
@@ -149,6 +162,14 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setData() {
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+        float total = 0f;
+        for (Bill bill : bills) {
+            total += bill.getCost();
+        }
+
+        textTotal.setText("¥" + df.format(total));
+
         LinkedHashMap<String, Double> billMap = new LinkedHashMap<>();
         billMap.put("纯净水", 0d);
         billMap.put("生活用品", 0d);
@@ -193,11 +214,11 @@ public class DetailActivity extends BaseActivity {
     }
 
 
-    public static void start(Context context, ArrayList<Bill> bills, boolean isClear,int index) {
+    public static void start(Context context, ArrayList<Bill> bills, boolean isClear, int index) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putParcelableArrayListExtra(BILL_EXTRA, bills);
         intent.putExtra(CLEAR_EXTRA, isClear);
-        intent.putExtra(INDEX_EXTRA,index);
+        intent.putExtra(INDEX_EXTRA, index);
         context.startActivity(intent);
     }
 }

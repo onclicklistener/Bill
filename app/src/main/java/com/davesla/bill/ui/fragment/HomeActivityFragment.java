@@ -13,6 +13,7 @@ import com.davesla.bill.R;
 import com.davesla.bill.adapter.BillAdapter;
 import com.davesla.bill.bean.event.OnAddEvent;
 import com.davesla.bill.bean.event.OnClearEvent;
+import com.davesla.bill.bean.event.OnDeleteEvent;
 import com.davesla.bill.service.BillService;
 import com.davesla.bill.service.bean.BillGroup;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
@@ -77,6 +78,10 @@ public class HomeActivityFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     public void onEventMainThread(OnClearEvent event) {
+        BillService.getBillGroups(this);
+    }
+
+    public void onEventMainThread(OnDeleteEvent event) {
         BillService.getBillGroups(this);
     }
 }

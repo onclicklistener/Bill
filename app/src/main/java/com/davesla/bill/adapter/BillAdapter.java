@@ -24,6 +24,7 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by hwb on 15/12/8.
@@ -51,6 +52,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         BillGroup billGroup = billGroups.get(position);
 
         holder.title.setText(billGroup.title);
+        Collections.sort(billGroup.bills);
         Bill bill = billGroup.bills.get(0);
         if (bill.getUserName().equals("何卫兵")) {
             holder.avatar.setImageResource(R.drawable.ic_avatar_bing);
